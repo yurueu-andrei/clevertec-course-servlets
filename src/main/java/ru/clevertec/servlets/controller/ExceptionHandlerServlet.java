@@ -11,9 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static jakarta.servlet.RequestDispatcher.ERROR_MESSAGE;
@@ -56,10 +54,8 @@ public class ExceptionHandlerServlet extends HttpServlet {
     private void handleException(HttpServletResponse response, HttpServletRequest request) throws IOException {
         PrintWriter writer = response.getWriter();
         ObjectMapper mapper = new ObjectMapper();
-        List<Map<String, String>> details = new ArrayList<>();
-        Map<String, String> detail = new HashMap<>();
-        detail.put("info", request.getAttribute(ERROR_MESSAGE).toString());
-        details.add(detail);
+        Map<String, Object> details = new HashMap<>();
+        details.put("info", request.getAttribute(ERROR_MESSAGE));
         String responseValue = mapper
                 .writeValueAsString(new ApiCallDetailedError("Something gone wrong", details));
         writer.print(responseValue);
@@ -71,6 +67,6 @@ public class ExceptionHandlerServlet extends HttpServlet {
     @AllArgsConstructor
     private static class ApiCallDetailedError {
         private String message;
-        private List<Map<String, String>> details;
+        private Map<String, Object> details;
     }
 }
